@@ -13,8 +13,6 @@ Cloud Run runs on Google's serverless infrastructure, which is outside your VPC.
 - Cloud SQL with zero public exposure
 - A test VM for manual verification
 
----
-
 ## Architecture
 
 ```
@@ -49,15 +47,11 @@ Cloud Run runs on Google's serverless infrastructure, which is outside your VPC.
 
 The VPC Connector is a managed resource that runs small VMs (e2-micro) in your VPC subnet. When Cloud Run sends traffic to private IP ranges, it routes through the connector into your VPC.
 
----
-
 ## Prerequisites
 
 - GCP account with billing enabled
 - `gcloud` CLI installed and authenticated
 - Terraform >= 1.0
-
----
 
 ## Deploy
 
@@ -129,8 +123,6 @@ You'll see:
 - `test_vm_ip` — Internal IP of test-vm
 - `vpc_connector_id` — Connector resource ID
 
----
-
 ## Verify
 
 ### 1. Check VPC Connector Status
@@ -184,8 +176,6 @@ curl -s "$SERVICE_URL/check-internal/$TEST_VM_IP" | jq .
 
 Expected: Cloud Run reaches test-vm's nginx through the VPC connector.
 
----
-
 ## How the Connector Works
 
 1. Terraform creates a `/28` subnet range (10.8.0.0/28) dedicated to the connector
@@ -195,8 +185,6 @@ Expected: Cloud Run reaches test-vm's nginx through the VPC connector.
 5. The connector VMs forward that traffic into your VPC
 
 Public traffic (external APIs, etc.) still goes directly from Cloud Run — only private ranges use the connector.
-
----
 
 ## Cleanup
 
@@ -208,36 +196,11 @@ terraform destroy
 gcloud container images delete gcr.io/$PROJECT_ID/my-api --force-delete-tags --quiet
 ```
 
----
-
-## Troubleshooting
-
-### Cloud Run returns "connection refused" for /db
-1. Check connector is READY: `gcloud compute networks vpc-access connectors list --region=us-central1`
-2. Verify Cloud SQL has a private IP: `terraform output cloud_sql_private_ip`
-3. Cloud Run and connector must be in the same region
-
-### Can't SSH into test-vm
-IAP firewall rule must allow 35.235.240.0/20 on TCP:22. Check:
-```bash
-gcloud compute firewall-rules list --filter="name:allow-iap"
-```
-
-### Cloud SQL creation takes forever
-Normal. Cloud SQL provisioning takes 5-10 minutes. If it fails, check that `servicenetworking.googleapis.com` API is enabled and the Private Service Access connection exists.
-
-### Connector stuck in CREATING
-Takes 2-3 minutes. If it stays longer than 5 minutes, check quota for e2-micro instances in your region.
-
----
-
 ## Resources
 
 - [Serverless VPC Access](https://cloud.google.com/vpc/docs/serverless-vpc-access)
 - [Configure VPC Connector](https://cloud.google.com/vpc/docs/configure-serverless-vpc-access)
 - [Cloud SQL Private IP](https://cloud.google.com/sql/docs/postgres/private-ip)
-
----
 
 ## License
 
