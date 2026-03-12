@@ -74,6 +74,7 @@ terraform apply
 
 Terraform creates:
 - VPC with subnet
+- Cloud Router and Cloud NAT (for VM internet access)
 - Private Service Access (VPC peering to Google's managed network)
 - Cloud SQL PostgreSQL 14 (private IP only, no public access)
 - Serverless VPC Access Connector

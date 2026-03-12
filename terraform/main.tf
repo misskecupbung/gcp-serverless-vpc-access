@@ -60,6 +60,23 @@ resource "google_compute_firewall" "allow_connector" {
 }
 
 # -----------------------------------------------------------------------------
+# Cloud Router and Cloud NAT
+# -----------------------------------------------------------------------------
+resource "google_compute_router" "router" {
+  name    = "my-router"
+  network = google_compute_network.vpc_main.id
+  region  = var.region
+}
+
+resource "google_compute_router_nat" "nat" {
+  name                               = "my-nat"
+  router                             = google_compute_router.router.name
+  region                             = var.region
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+}
+
+# -----------------------------------------------------------------------------
 # Test VM
 # -----------------------------------------------------------------------------
 resource "google_compute_instance" "test_vm" {
