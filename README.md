@@ -46,6 +46,7 @@ gcloud services enable cloudbuild.googleapis.com
 gcloud services enable iap.googleapis.com
 gcloud services enable sqladmin.googleapis.com
 gcloud services enable servicenetworking.googleapis.com
+gcloud services enable cloudresourcemanager.googleapis.com
 ```
 
 ### Step 2: Build the Container Image

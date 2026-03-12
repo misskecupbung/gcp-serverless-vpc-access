@@ -13,6 +13,11 @@ output "cloud_sql_connection_name" {
   value       = google_sql_database_instance.postgres.connection_name
 }
 
+output "cloud_sql_instance_name" {
+  description = "Cloud SQL instance name"
+  value       = google_sql_database_instance.postgres.name
+}
+
 output "test_vm_ip" {
   description = "Internal IP of test-vm"
   value       = google_compute_instance.test_vm.network_interface[0].network_ip
