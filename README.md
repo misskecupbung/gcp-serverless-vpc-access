@@ -16,6 +16,8 @@ Cloud Run runs on Google's serverless infrastructure, which is outside your VPC.
 ## Architecture
 
 
+![img](img/gcp-serverless-vpc-access-arch.png)
+
 The VPC Connector is a managed resource that runs small VMs (e2-micro) in your VPC subnet. When Cloud Run sends traffic to private IP ranges, it routes through the connector into your VPC.
 
 ## Prerequisites
@@ -168,6 +170,18 @@ terraform destroy
 # Delete container image
 gcloud container images delete gcr.io/$PROJECT_ID/my-api --force-delete-tags --quiet
 ```
+
+**If `terraform destroy` fails with "Producer services are still using this connection":**
+
+Delete the VPC peering connection first:
+
+```bash
+gcloud services vpc-peerings delete \
+  --network=vpc-main \
+  --service=servicenetworking.googleapis.com
+```
+
+Then retry `terraform destroy`.
 
 ## Resources
 
